@@ -150,7 +150,7 @@ public class BoardImpl implements Board {
           || pieceAtMoveTile instanceof Exit) {
         continue;
       }
-      CollisionResult enemyCollision = ((Enemy) p).collide(piecesPositions.get(randEnemyMove));
+      CollisionResult enemyCollision = ((Enemy) p).collide(pieceAtMoveTile);
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
         piecesPositions.remove(posn);
         board[posn.getRow()][posn.getCol()] = null;
