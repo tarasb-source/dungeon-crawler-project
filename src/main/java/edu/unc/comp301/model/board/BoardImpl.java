@@ -31,7 +31,7 @@ public class BoardImpl implements Board {
     this.width = board[0].length;
     this.height = board.length;
     this.numAvailableSpots = width * height;
-    boardInit();
+    scanBoard();
   }
 
   private void boardInit() {
@@ -64,6 +64,7 @@ public class BoardImpl implements Board {
       Posn posn = new Posn(randRow, randCol);
       if (!piecesPositions.containsKey(posn)) {
         Piece p = supplier.get();
+        p.setPosn(posn);
         board[randRow][randCol] = p;
         piecesPositions.put(posn, p);
         if (p instanceof Hero) {
@@ -98,15 +99,6 @@ public class BoardImpl implements Board {
 
   @Override
   public CollisionResult moveHero(int drow, int dcol) {
-    for (int row = 0; row < height; row++) {
-      for (int col = 0; col < width; col++) {
-        Piece p = board[row][col];
-        if (p instanceof Hero) {
-          heroPosition = p.getPosn();
-        }
-      }
-    }
-
     int newRow = heroPosition.getRow() + drow;
     int newCol = heroPosition.getCol() + dcol;
     Posn newPos = new Posn(newRow, newCol);
@@ -205,5 +197,21 @@ public class BoardImpl implements Board {
         + ", numAvailableSpots="
         + numAvailableSpots
         + '}';
+  }
+
+  private void scanBoard() {
+    for (int row = 0; row < height; row++) {
+      for (int col = 0; col < width; col++) {
+        Piece p = board[row][col];
+        if (p != null) {
+          Posn posn = new Posn(row, col);
+          p.setPosn(posn);
+          piecesPositions.put(posn, p);
+          if (p instanceof Hero) {
+            heroPosition = posn;
+          }
+        }
+      }
+    }
   }
 }
