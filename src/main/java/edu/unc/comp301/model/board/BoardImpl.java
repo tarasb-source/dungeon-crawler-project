@@ -57,6 +57,8 @@ public class BoardImpl implements Board {
   }
 
   private void initPieces(int count, Supplier<Piece> supplier) {
+    piecesPositions.clear();
+
     while (count > 0) {
       int randRow = random.nextInt(0, height);
       int randCol = random.nextInt(0, width);
@@ -97,17 +99,11 @@ public class BoardImpl implements Board {
 
   @Override
   public CollisionResult moveHero(int drow, int dcol) {
-    if (heroPosition == null) {
-      for (Piece p : piecesPositions.values()) {
-        if (p instanceof Hero) {
-          heroPosition = p.getPosn();
-        }
-      }
-      if (heroPosition == null) {
-        throw new NoSuchElementException();
+    for (Piece p : piecesPositions.values()) {
+      if (p instanceof Hero) {
+        heroPosition = p.getPosn();
       }
     }
-
     int newRow = heroPosition.getRow() + drow;
     int newCol = heroPosition.getCol() + dcol;
     Posn newPos = new Posn(newRow, newCol);
