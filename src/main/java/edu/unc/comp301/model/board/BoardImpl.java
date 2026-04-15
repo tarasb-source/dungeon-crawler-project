@@ -4,10 +4,7 @@ import edu.unc.comp301.model.pieces.*;
 import javafx.geometry.Pos;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class BoardImpl implements Board {
@@ -15,10 +12,12 @@ public class BoardImpl implements Board {
   private Piece[][] board;
   private Map<Posn, Piece> piecesPositions;
   private int width, height, numAvailableSpots;
+  private Posn heroPosition;
 
   public BoardImpl(int width, int height) {
     this.board = new Piece[width][height];
     this.piecesPositions = new HashMap<>();
+    this.heroPosition = null;
     this.width = width;
     this.height = height;
     this.numAvailableSpots = width * height;
@@ -28,6 +27,7 @@ public class BoardImpl implements Board {
   public BoardImpl(Piece[][] board) {
     this.board = board;
     this.piecesPositions = new HashMap<>();
+    this.heroPosition = null;
     this.width = board[0].length;
     this.height = board.length;
     this.numAvailableSpots = width * height;
@@ -65,6 +65,9 @@ public class BoardImpl implements Board {
         Piece p = supplier.get();
         board[randRow][randCol] = p;
         piecesPositions.put(posn, p);
+        if (p instanceof Hero) {
+          heroPosition = posn;
+        }
         count--;
         numAvailableSpots--;
       }
@@ -94,7 +97,89 @@ public class BoardImpl implements Board {
 
   @Override
   public CollisionResult moveHero(int drow, int dcol) {
-    return null;
+    int newRow = heroPosition.getRow() + drow;
+    int newCol = heroPosition.getCol() + dcol;
+    Posn newPos = new Posn(newRow, newCol);
+
+    // Check if the move is illegal
+    if ((newRow < 0 || newRow >= height || newCol < 0 || newCol >= width)
+        || (piecesPositions.get(newPos) instanceof Wall)) {
+      return new CollisionResult(0, CollisionResult.Result.CONTINUE);
+    }
+
+    // Hero can move
+    Hero hero = (Hero) piecesPositions.get(heroPosition);
+    CollisionResult heroCollision = hero.collide(piecesPositions.get(newPos));
+    if (heroCollision.getResults() == CollisionResult.Result.GAME_OVER) {
+      return heroCollision;
+    }
+    // Remove old position
+    piecesPositions.remove(heroPosition);
+    board[heroPosition.getRow()][heroPosition.getCol()] = null;
+
+    // Add hero to the new position
+    piecesPositions.put(newPos, hero);
+    board[newRow][newCol] = hero;
+    heroPosition = newPos;
+
+    if (heroCollision.getResults() == CollisionResult.Result.NEXT_LEVEL) {
+      return heroCollision;
+    }
+
+    // Now enemies move
+    Iterator<Posn> it = piecesPositions.keySet().iterator();
+    while (it.hasNext()) {
+      Posn posn = it.next();
+      Piece p = piecesPositions.get(posn);
+      if (!(p instanceof Enemy)) {
+        continue;
+      }
+
+      Enemy enemy = (Enemy) p;
+      Directions dir = Directions.values()[random.nextInt(Directions.values().length)];
+      int newEnemyRow = posn.getRow() + dir.getDRow();
+      int newEnemyCol = posn.getCol() + dir.getDCol();
+
+      if (newEnemyRow < 0 || newEnemyRow >= height || newEnemyCol < 0 || newEnemyCol >= width) {
+        continue;
+      }
+
+      Posn randEnemyMove = new Posn(newEnemyRow, newEnemyCol);
+      CollisionResult enemyCollision = ((Enemy) p).collide(piecesPositions.get(randEnemyMove));
+      if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
+        it.remove();
+        board[posn.getRow()][posn.getCol()] = null;
+        piecesPositions.put(randEnemyMove, enemy);
+        board[newEnemyRow][newEnemyCol] = enemy;
+      } else {
+        return enemyCollision;
+      }
+    }
+
+    return new CollisionResult(0, CollisionResult.Result.CONTINUE);
+  }
+
+  private enum Directions {
+    UP(-1, 0),
+    DOWN(1, 0),
+    LEFT(0, -1),
+    RIGHT(0, 1);
+
+    private final int dCol;
+    private final int dRow;
+
+    private Directions(int dRow, int dCol) {
+      this.dRow = dRow;
+      this.dCol = dCol;
+    }
+
+    public int getDRow() {
+      return dRow;
+    }
+
+    public int getDCol() {
+      return dCol;
+    }
   }
 
   @Override
