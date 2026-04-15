@@ -29,4 +29,9 @@ public class Posn {
     if (!(o instanceof Posn posn)) return false;
     return row == posn.row && col == posn.col;
   }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(row, col);
+  }
 }
