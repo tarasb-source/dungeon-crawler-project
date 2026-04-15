@@ -97,6 +97,17 @@ public class BoardImpl implements Board {
 
   @Override
   public CollisionResult moveHero(int drow, int dcol) {
+    if (heroPosition == null) {
+      for (Piece p : piecesPositions.values()) {
+        if (p instanceof Hero) {
+          heroPosition = p.getPosn();
+        }
+      }
+      if (heroPosition == null) {
+        throw new NoSuchElementException();
+      }
+    }
+
     int newRow = heroPosition.getRow() + drow;
     int newCol = heroPosition.getCol() + dcol;
     Posn newPos = new Posn(newRow, newCol);
