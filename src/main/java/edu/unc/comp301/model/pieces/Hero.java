@@ -1,7 +1,9 @@
 package edu.unc.comp301.model.pieces;
 
 public class Hero extends APiece implements MovablePiece {
-  public Hero() {}
+  public Hero() {
+    super();
+  }
 
   public Hero(String name, String resourcePath) {
     super(name, resourcePath);

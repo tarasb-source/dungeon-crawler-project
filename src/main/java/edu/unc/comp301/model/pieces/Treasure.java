@@ -4,6 +4,7 @@ public class Treasure extends APiece {
   private final int value;
 
   public Treasure() {
+    super();
     this.value = 0;
   }
 
