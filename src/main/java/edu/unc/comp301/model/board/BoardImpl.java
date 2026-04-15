@@ -1,9 +1,6 @@
 package edu.unc.comp301.model.board;
 
 import edu.unc.comp301.model.pieces.*;
-import javafx.geometry.Pos;
-
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Supplier;
 
