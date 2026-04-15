@@ -144,6 +144,9 @@ public class BoardImpl implements Board {
       }
 
       Posn randEnemyMove = new Posn(newEnemyRow, newEnemyCol);
+      if (piecesPositions.get(randEnemyMove) instanceof Enemy) {
+        continue;
+      }
       CollisionResult enemyCollision = ((Enemy) p).collide(piecesPositions.get(randEnemyMove));
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
         piecesPositions.remove(posn);
