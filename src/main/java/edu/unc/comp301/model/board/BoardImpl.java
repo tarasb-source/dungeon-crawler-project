@@ -15,7 +15,7 @@ public class BoardImpl implements Board {
   private Posn heroPosition;
 
   public BoardImpl(int width, int height) {
-    this.board = new Piece[width][height];
+    this.board = new Piece[height][width];
     this.piecesPositions = new HashMap<>();
     this.heroPosition = null;
     this.width = width;
@@ -44,6 +44,7 @@ public class BoardImpl implements Board {
 
   @Override
   public void init(int enemies, int treasures, int walls) {
+    piecesPositions.clear();
     boardInit();
 
     if ((enemies + treasures + walls + 1 + 1) > numAvailableSpots) {
@@ -57,8 +58,6 @@ public class BoardImpl implements Board {
   }
 
   private void initPieces(int count, Supplier<Piece> supplier) {
-    piecesPositions.clear();
-
     while (count > 0) {
       int randRow = random.nextInt(0, height);
       int randCol = random.nextInt(0, width);
@@ -99,11 +98,6 @@ public class BoardImpl implements Board {
 
   @Override
   public CollisionResult moveHero(int drow, int dcol) {
-    for (Piece p : piecesPositions.values()) {
-      if (p instanceof Hero) {
-        heroPosition = p.getPosn();
-      }
-    }
     int newRow = heroPosition.getRow() + drow;
     int newCol = heroPosition.getCol() + dcol;
     Posn newPos = new Posn(newRow, newCol);
@@ -134,7 +128,7 @@ public class BoardImpl implements Board {
     }
 
     // Now enemies move
-    Iterator<Posn> it = piecesPositions.keySet().iterator();
+    Iterator<Posn> it = new ArrayList<>(piecesPositions.keySet()).iterator();
     while (it.hasNext()) {
       Posn posn = it.next();
       Piece p = piecesPositions.get(posn);
@@ -154,7 +148,7 @@ public class BoardImpl implements Board {
       Posn randEnemyMove = new Posn(newEnemyRow, newEnemyCol);
       CollisionResult enemyCollision = ((Enemy) p).collide(piecesPositions.get(randEnemyMove));
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
-        it.remove();
+        piecesPositions.remove(posn);
         board[posn.getRow()][posn.getCol()] = null;
         piecesPositions.put(randEnemyMove, enemy);
         board[newEnemyRow][newEnemyCol] = enemy;
@@ -162,8 +156,7 @@ public class BoardImpl implements Board {
         return enemyCollision;
       }
     }
-
-    return new CollisionResult(0, CollisionResult.Result.CONTINUE);
+    return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
   }
 
   private enum Directions {
