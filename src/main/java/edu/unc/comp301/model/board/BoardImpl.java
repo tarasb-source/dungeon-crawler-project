@@ -157,7 +157,7 @@ public class BoardImpl implements Board {
         piecesPositions.put(randEnemyMove, enemy);
         board[newEnemyRow][newEnemyCol] = enemy;
       } else {
-        return enemyCollision;
+        return new CollisionResult(heroCollision.getPoints(), enemyCollision.getResults());
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
