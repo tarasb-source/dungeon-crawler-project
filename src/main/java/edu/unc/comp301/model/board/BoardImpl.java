@@ -43,6 +43,7 @@ public class BoardImpl implements Board {
   public void init(int enemies, int treasures, int walls) {
     piecesPositions.clear();
     boardInit();
+    numAvailableSpots = width * height;
 
     if ((enemies + treasures + walls + 1 + 1) > numAvailableSpots) {
       throw new IllegalArgumentException("Not enough space on a board");
@@ -92,6 +93,7 @@ public class BoardImpl implements Board {
   public void set(Piece p, Posn newPos) {
     board[newPos.getRow()][newPos.getCol()] = p;
     piecesPositions.put(newPos, p);
+    p.setPosn(newPos);
   }
 
   @Override
@@ -130,6 +132,7 @@ public class BoardImpl implements Board {
     while (it.hasNext()) {
       Posn posn = it.next();
       Piece p = piecesPositions.get(posn);
+      if (p == null) continue;
       if (!(p instanceof Enemy)) {
         continue;
       }
@@ -150,14 +153,14 @@ public class BoardImpl implements Board {
           || pieceAtMoveTile instanceof Exit) {
         continue;
       }
-      CollisionResult enemyCollision = ((Enemy) p).collide(pieceAtMoveTile);
+      CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
         piecesPositions.remove(posn);
         board[posn.getRow()][posn.getCol()] = null;
         piecesPositions.put(randEnemyMove, enemy);
         board[newEnemyRow][newEnemyCol] = enemy;
       } else {
-        return new CollisionResult(heroCollision.getPoints(), enemyCollision.getResults());
+        return enemyCollision;
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
