@@ -2,6 +2,10 @@ package edu.unc.comp301.model.pieces;
 
 public class Hero extends APiece implements MovablePiece {
 
+  public Hero() {
+    super("Hero", "src/main/resources/Hero.css");
+  }
+
   public Hero(String name, String resourcePath) {
     super(name, resourcePath);
   }
