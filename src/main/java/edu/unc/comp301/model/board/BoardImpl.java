@@ -166,7 +166,7 @@ public class BoardImpl implements Board {
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
   }
 
-  public enum Directions {
+  private enum Directions {
     UP(-1, 0),
     DOWN(1, 0),
     LEFT(0, -1),
@@ -175,7 +175,7 @@ public class BoardImpl implements Board {
     private final int dCol;
     private final int dRow;
 
-    Directions(int dRow, int dCol) {
+    private Directions(int dRow, int dCol) {
       this.dRow = dRow;
       this.dCol = dCol;
     }

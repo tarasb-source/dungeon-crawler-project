@@ -5,7 +5,6 @@ import edu.unc.comp301.model.board.BoardImpl;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.pieces.CollisionResult;
 import edu.unc.comp301.model.pieces.Piece;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -73,26 +72,29 @@ public class ModelImpl implements Model {
   @Override
   public void startGame() {
     status = STATUS.IN_PROGRESS;
-    notifyObservers();
     curScore = 0;
     level = 1;
-    int numOfEnemies = level + 1;
-    int numOfTreasures = 2;
-    int numOfWalls = 2;
+    try {
+      board.init(level + 1, 2, 2);
+    } catch (IllegalArgumentException e) {
+      endGame();
+      return;
+    }
+    notifyObservers();
   }
 
   @Override
   public void endGame() {
+    if (curScore > highScore) {
+      highScore = curScore;
+    }
     status = STATUS.END_GAME;
     notifyObservers();
   }
 
-  private void move(BoardImpl.Directions direction) {
-    CollisionResult result =
-        board.moveHero(direction.getDRow(), direction.getDCol());
-    if (result.getPoints() > 0) {
-      curScore++;
-    }
+  private void move(int drow, int dcol) {
+    CollisionResult result = board.moveHero(drow, dcol);
+    curScore += result.getPoints();
     if (result.getResults() == CollisionResult.Result.NEXT_LEVEL) {
       level++;
       board.init(level, 2, 2);
@@ -102,26 +104,27 @@ public class ModelImpl implements Model {
       }
       endGame();
     }
+    notifyObservers();
   }
 
   @Override
   public void moveUp() {
-    move(BoardImpl.Directions.UP);
+    move(-1, 0);
   }
 
   @Override
   public void moveDown() {
-    move(BoardImpl.Directions.DOWN);
+    move(1, 0);
   }
 
   @Override
   public void moveLeft() {
-    move(BoardImpl.Directions.LEFT);
+    move(0, -1);
   }
 
   @Override
   public void moveRight() {
-    move(BoardImpl.Directions.RIGHT);
+    move(0, 1);
   }
 
   @Override
