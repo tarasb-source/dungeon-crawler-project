@@ -139,33 +139,43 @@ public class BoardImpl implements Board {
       }
 
       Enemy enemy = (Enemy) p;
-      Directions dir = Directions.values()[random.nextInt(Directions.values().length)];
-      int newEnemyRow = posn.getRow() + dir.getDRow();
-      int newEnemyCol = posn.getCol() + dir.getDCol();
+      Directions[] dirs = Directions.values();
+      int start = random.nextInt(dirs.length);
+      boolean moved = false;
 
-      if (newEnemyRow < 0 || newEnemyRow >= height || newEnemyCol < 0 || newEnemyCol >= width) {
-        continue;
+      for (int i = 0; i < dirs.length; i++) {
+        Directions dir = dirs[(start + i) % dirs.length];
+        int newEnemyRow = posn.getRow() + dir.getDRow();
+        int newEnemyCol = posn.getCol() + dir.getDCol();
+
+        if (newEnemyRow < 0 || newEnemyRow >= height || newEnemyCol < 0 || newEnemyCol >= width) {
+          continue;
+        }
+
+        Posn randEnemyMove = new Posn(newEnemyRow, newEnemyCol);
+        Piece pieceAtMoveTile = piecesPositions.get(randEnemyMove);
+        if (pieceAtMoveTile instanceof Enemy
+            || pieceAtMoveTile instanceof Wall
+            || pieceAtMoveTile instanceof Exit) {
+          continue;
+        }
+        CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
+
+        piecesPositions.remove(posn);
+        board[posn.getRow()][posn.getCol()] = null;
+        piecesPositions.put(randEnemyMove, enemy);
+        board[randEnemyMove.getRow()][randEnemyMove.getCol()] = enemy;
+        enemy.setPosn(randEnemyMove);
+        moved = true;
+
+        if (enemyCollision.getResults() != CollisionResult.Result.CONTINUE) {
+          return new CollisionResult(heroCollision.getPoints(), enemyCollision.getResults());
+        }
+        break;
       }
 
-      Posn randEnemyMove = new Posn(newEnemyRow, newEnemyCol);
-      Piece pieceAtMoveTile = piecesPositions.get(randEnemyMove);
-      if (pieceAtMoveTile instanceof Enemy
-          || pieceAtMoveTile instanceof Wall
-          || pieceAtMoveTile instanceof Exit) {
+      if (!moved) {
         continue;
-      }
-      CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
-
-      piecesPositions.remove(posn);
-      board[posn.getRow()][posn.getCol()] = null;
-      piecesPositions.put(randEnemyMove, enemy);
-      board[randEnemyMove.getRow()][randEnemyMove.getCol()] = enemy;
-      enemy.setPosn(randEnemyMove);
-
-      if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
-        continue;
-      } else {
-        return new CollisionResult(heroCollision.getPoints(), enemyCollision.getResults());
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
