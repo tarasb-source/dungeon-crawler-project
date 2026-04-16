@@ -114,7 +114,6 @@ public class BoardImpl implements Board {
     if (heroCollision.getResults() == CollisionResult.Result.GAME_OVER) {
       return heroCollision;
     }
-
     // Remove old position
     piecesPositions.remove(heroPosition);
     board[heroPosition.getRow()][heroPosition.getCol()] = null;
@@ -122,14 +121,11 @@ public class BoardImpl implements Board {
     // Add hero to the new position
     piecesPositions.put(newPos, hero);
     board[newRow][newCol] = hero;
-    hero.setPosn(newPos);
     heroPosition = newPos;
 
     if (heroCollision.getResults() == CollisionResult.Result.NEXT_LEVEL) {
       return heroCollision;
     }
-
-    int totalPoints = heroCollision.getPoints();
 
     // Now enemies move
     Iterator<Posn> it = new ArrayList<>(piecesPositions.keySet()).iterator();
@@ -157,19 +153,14 @@ public class BoardImpl implements Board {
           || pieceAtMoveTile instanceof Exit) {
         continue;
       }
-      if (pieceAtMoveTile instanceof Treasure) {
-        piecesPositions.remove(randEnemyMove);
-      }
-
       CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
         piecesPositions.remove(posn);
         board[posn.getRow()][posn.getCol()] = null;
         piecesPositions.put(randEnemyMove, enemy);
         board[newEnemyRow][newEnemyCol] = enemy;
-        enemy.setPosn(randEnemyMove);
       } else {
-        return new CollisionResult(totalPoints, CollisionResult.Result.GAME_OVER);
+        return enemyCollision;
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
