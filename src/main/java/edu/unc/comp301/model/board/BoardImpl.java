@@ -109,14 +109,10 @@ public class BoardImpl implements Board {
     }
 
     // Hero can move
-    Piece target = piecesPositions.get(newPos);
     Hero hero = (Hero) piecesPositions.get(heroPosition);
-    CollisionResult heroCollision = hero.collide(target);
+    CollisionResult heroCollision = hero.collide(piecesPositions.get(newPos));
     if (heroCollision.getResults() == CollisionResult.Result.GAME_OVER) {
       return heroCollision;
-    }
-    if (target != null) {
-      piecesPositions.remove(newPos);
     }
 
     // Remove old position
@@ -140,6 +136,7 @@ public class BoardImpl implements Board {
     while (it.hasNext()) {
       Posn posn = it.next();
       Piece p = piecesPositions.get(posn);
+      if (p == null) continue;
       if (!(p instanceof Enemy)) {
         continue;
       }
@@ -175,7 +172,7 @@ public class BoardImpl implements Board {
         return new CollisionResult(totalPoints, CollisionResult.Result.GAME_OVER);
       }
     }
-    return new CollisionResult(totalPoints, CollisionResult.Result.CONTINUE);
+    return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
   }
 
   private enum Directions {
