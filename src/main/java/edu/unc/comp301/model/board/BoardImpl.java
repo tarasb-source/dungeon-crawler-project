@@ -126,6 +126,7 @@ public class BoardImpl implements Board {
     // Add hero to the new position
     piecesPositions.put(newPos, hero);
     board[newRow][newCol] = hero;
+    hero.setPosn(newPos);
     heroPosition = newPos;
 
     if (heroCollision.getResults() == CollisionResult.Result.NEXT_LEVEL) {
