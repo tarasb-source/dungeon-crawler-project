@@ -134,7 +134,7 @@ public class ModelImpl implements Model {
 
   private void notifyObservers() {
     for (Observer o : observers) {
-      o.notify();
+      o.update();
     }
   }
 }
