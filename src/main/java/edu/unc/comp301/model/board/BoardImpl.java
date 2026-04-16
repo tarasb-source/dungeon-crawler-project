@@ -122,6 +122,7 @@ public class BoardImpl implements Board {
     piecesPositions.put(newPos, hero);
     board[newRow][newCol] = hero;
     heroPosition = newPos;
+    hero.setPosn(newPos);
 
     if (heroCollision.getResults() == CollisionResult.Result.NEXT_LEVEL) {
       return heroCollision;
@@ -154,13 +155,17 @@ public class BoardImpl implements Board {
         continue;
       }
       CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
+
+      piecesPositions.remove(posn);
+      board[posn.getRow()][posn.getCol()] = null;
+      piecesPositions.put(randEnemyMove, enemy);
+      board[randEnemyMove.getRow()][randEnemyMove.getCol()] = enemy;
+      enemy.setPosn(randEnemyMove);
+
       if (enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
-        piecesPositions.remove(posn);
-        board[posn.getRow()][posn.getCol()] = null;
-        piecesPositions.put(randEnemyMove, enemy);
-        board[newEnemyRow][newEnemyCol] = enemy;
+        continue;
       } else {
-        return enemyCollision;
+        return new CollisionResult(heroCollision.getPoints(), enemyCollision.getResults());
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
