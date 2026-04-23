@@ -2,14 +2,12 @@ package edu.unc.comp301.view;
 
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
+import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
-import javafx.scene.control.Label;
 
 public class TitleScreenView implements FXComponent {
   private final Controller controller;
@@ -46,7 +44,9 @@ public class TitleScreenView implements FXComponent {
     Label creditLabel = new Label("By Taras Brytskyy");
     layoutCredits.getChildren().add(creditLabel);
 
-    layout.getChildren().addAll(title, layoutHighScore, layoutLastScore, layoutButton, layoutCredits);
+    layout
+        .getChildren()
+        .addAll(title, layoutHighScore, layoutLastScore, layoutButton, layoutCredits);
     layout.setPadding(new Insets(40));
     layout.setSpacing(15);
     layout.setAlignment(javafx.geometry.Pos.CENTER);

@@ -85,15 +85,15 @@ public class GameView implements FXComponent {
   private static ImageView getImageView(Piece piece) {
     Image icon = null;
     if (piece instanceof Hero) {
-      icon = new Image("/images/hero.png");
+      icon = new Image("/hero.png");
     } else if (piece instanceof Enemy) {
-      icon = new Image("/images/enemy_pink.png");
+      icon = new Image("/enemy_pink.png");
     } else if (piece instanceof Wall) {
-      icon = new Image("/images/wall.png");
+      icon = new Image("/wall.png");
     } else if (piece instanceof Exit) {
-      icon = new Image("/images/exit.png");
+      icon = new Image("/exit.png");
     } else if (piece instanceof Treasure) {
-      icon = new Image("/images/treasure.png");
+      icon = new Image("/treasure.png");
     }
 
     ImageView imageView = new ImageView(icon);
