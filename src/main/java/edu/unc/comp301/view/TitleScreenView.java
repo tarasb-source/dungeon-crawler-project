@@ -2,10 +2,10 @@ package edu.unc.comp301.view;
 
 import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
-import javafx.scene.control.Label;
 import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
