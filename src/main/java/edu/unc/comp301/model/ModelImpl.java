@@ -97,7 +97,12 @@ public class ModelImpl implements Model {
     curScore += result.getPoints();
     if (result.getResults() == CollisionResult.Result.NEXT_LEVEL) {
       level++;
-      board.init(level, 2, 2);
+      try {
+        board.init(level + 1, 2, 2);
+      } catch (IllegalArgumentException e) {
+        endGame();
+        return;
+      }
     } else if (result.getResults() == CollisionResult.Result.GAME_OVER) {
       if (curScore > highScore) {
         highScore = curScore;

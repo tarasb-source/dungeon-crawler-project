@@ -5,7 +5,7 @@ public class Treasure extends APiece {
 
   public Treasure() {
     super("Treasure", "src/main/resources/Treasure.css");
-    this.value = 0;
+    this.value = 50;
   }
 
   public Treasure(String name, String resourcePath, int value) {
