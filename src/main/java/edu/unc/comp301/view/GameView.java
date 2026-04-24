@@ -4,16 +4,15 @@ import edu.unc.comp301.controller.Controller;
 import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.pieces.*;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Paint;
 
 public class GameView implements FXComponent {
   private final Controller controller;
@@ -27,7 +26,21 @@ public class GameView implements FXComponent {
   @Override
   public Parent render() {
     HBox layout = new HBox();
+    HBox.setHgrow(layout, Priority.ALWAYS);
+    HBox.setMargin(layout, new Insets(0));
+    layout.setAlignment(Pos.CENTER_LEFT);
+    layout.setFillHeight(true);
+    layout.setBackground(Background.fill(Paint.valueOf("grey")));
+
     GridPane board = new GridPane();
+    GridPane.setMargin(board, new Insets(0));
+    VBox.setVgrow(board, Priority.ALWAYS);
+    HBox.setHgrow(board, Priority.ALWAYS);
+    board.setAlignment(Pos.TOP_LEFT);
+    board.setMaxHeight(Double.MAX_VALUE);
+    board.setMaxWidth(Double.MAX_VALUE);
+    board.setHgap(0);
+    board.setVgap(0);
 
     StackPane currScorePane = new StackPane();
     Label currentScoreLabel = new Label("Current score: " + model.getCurScore());
@@ -40,11 +53,15 @@ public class GameView implements FXComponent {
         Piece piece = model.get(new Posn(row, col));
 
         StackPane cell = new StackPane();
-        cell.setPrefSize(30, 30);
+        cell.prefWidthProperty().bind(board.widthProperty().divide(model.getWidth()));
+        cell.prefHeightProperty().bind(layout.heightProperty().divide(model.getHeight()));
         cell.setStyle("-fx-border-color: #444; -fx-background-color: #2c2c2c;");
 
         if (piece != null) {
           ImageView imageView = getImageView(piece);
+          imageView.fitWidthProperty().bind(cell.prefWidthProperty().multiply(0.8));
+          imageView.fitHeightProperty().bind(cell.prefHeightProperty().multiply(0.8));
+          imageView.setPreserveRatio(true);
           cell.getChildren().add(imageView);
         }
 
@@ -53,6 +70,8 @@ public class GameView implements FXComponent {
     }
 
     VBox allControls = new VBox();
+    allControls.setSpacing(5);
+
     Button upButton = new Button("↑");
     StackPane stackForUpButton = new StackPane(upButton);
     upButton.setOnAction(e -> controller.moveUp());
@@ -63,18 +82,29 @@ public class GameView implements FXComponent {
     Button rightButton = new Button("→");
     rightButton.setOnAction(e -> controller.moveRight());
 
+    upButton.setPrefSize(60, 60);
+    leftButton.setPrefSize(60, 60);
+    downButton.setPrefSize(60, 60);
+    rightButton.setPrefSize(60, 60);
+
+    upButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+    downButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+    leftButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+    rightButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
+
     HBox otherControls = new HBox(leftButton, downButton, rightButton);
     otherControls.setSpacing(5);
     otherControls.setAlignment(Pos.CENTER);
     StackPane stackForOtherButtons = new StackPane(otherControls);
     allControls.getChildren().addAll(stackForUpButton, stackForOtherButtons);
-    allControls.setSpacing(5);
+    otherControls.setMaxWidth(Double.MAX_VALUE);
 
     VBox controlLayout = new VBox();
-    controlLayout.setPadding(new javafx.geometry.Insets(20));
+    controlLayout.setPadding(new Insets(20));
     controlLayout.setSpacing(30);
-    controlLayout.setAlignment(Pos.TOP_CENTER);
-    controlLayout.setMinWidth(150);
+    controlLayout.setAlignment(Pos.CENTER);
+    controlLayout.setMinWidth(300);
+    controlLayout.setMaxWidth(300);
     controlLayout.getChildren().addAll(currScorePane, allControls);
 
     layout.getChildren().addAll(board, controlLayout);

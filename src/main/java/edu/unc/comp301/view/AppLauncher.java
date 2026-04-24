@@ -6,6 +6,8 @@ import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.ModelImpl;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class AppLauncher extends Application {
@@ -21,8 +23,17 @@ public class AppLauncher extends Application {
 
     Scene scene = new Scene(view.render(), width, height);
     scene.getStylesheets().add("dungeon.css");
+    scene.addEventFilter(
+        KeyEvent.KEY_PRESSED,
+        event -> {
+          if (event.getCode() == KeyCode.ESCAPE) {
+            stage.close();
+          }
+        });
 
     stage.setScene(scene);
+    stage.setFullScreen(true);
+    stage.setFullScreenExitHint("");
     stage.show();
   }
 }

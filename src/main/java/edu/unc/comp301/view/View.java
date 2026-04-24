@@ -33,7 +33,13 @@ public class View implements FXComponent, Observer {
 
   @Override
   public void update() {
-    Scene newScene = new Scene(render());
-    stage.setScene(newScene);
+    if (stage.getScene() == null) {
+      stage.setScene(new Scene(render()));
+    } else {
+      stage.getScene().setRoot(render());
+    }
+    if (!stage.isFullScreen()) {
+      stage.setFullScreen(true);
+    }
   }
 }
