@@ -66,29 +66,7 @@ public class GameView implements FXComponent {
     Label hasShield = new Label(hero.hasShield() ? "Shield: ACTIVE" : "Shield: NONE");
     hasShield.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
 
-    for (int row = 0; row < model.getHeight(); row++) {
-      for (int col = 0; col < model.getWidth(); col++) {
-
-        Piece piece = model.get(new Posn(row, col));
-
-        StackPane cell = new StackPane();
-        cell.prefWidthProperty().bind(board.widthProperty().divide(model.getWidth()));
-        cell.prefHeightProperty().bind(layout.heightProperty().divide(model.getHeight()));
-
-        String cellStyle = getCellStyle();
-        cell.setStyle(cellStyle);
-
-        if (piece != null) {
-          ImageView imageView = getImageView(piece);
-          imageView.fitWidthProperty().bind(cell.prefWidthProperty().multiply(0.8));
-          imageView.fitHeightProperty().bind(cell.prefHeightProperty().multiply(0.8));
-          imageView.setPreserveRatio(true);
-          cell.getChildren().add(imageView);
-        }
-
-        board.add(cell, col, row);
-      }
-    }
+    fillBoardWithCells(board, layout);
 
     VBox allControls = new VBox();
 
@@ -131,13 +109,37 @@ public class GameView implements FXComponent {
     allControls.getChildren().addAll(stackForUpButton, stackForOtherButtons);
     otherControls.setMaxWidth(Double.MAX_VALUE);
 
+    Button changeThemeButton = new Button("Change Themes");
+    changeThemeButton.getStyleClass().add("toggle-view-button");
+    changeThemeButton.setAlignment(Pos.BOTTOM_CENTER);
+    changeThemeButton.setOnAction(
+        e -> {
+          ModelImpl m = (ModelImpl) model;
+
+          if (m.getTheme() == 1) {
+            m.setTheme(2);
+            layout.getStylesheets().clear();
+            fillBoardWithCells(board, layout);
+            layout
+                .getStylesheets()
+                .add(getClass().getResource("/stylesheets/game_view2.css").toExternalForm());
+          } else {
+            m.setTheme(1);
+            layout.getStylesheets().clear();
+            fillBoardWithCells(board, layout);
+            layout
+                .getStylesheets()
+                .add(getClass().getResource("/stylesheets/game_view1.css").toExternalForm());
+          }
+        });
+
     VBox controlLayout = new VBox();
     controlLayout.setPadding(new Insets(20));
     controlLayout.setSpacing(30);
     controlLayout.setAlignment(Pos.CENTER);
     controlLayout.setMinWidth(300);
     controlLayout.setMaxWidth(300);
-    controlLayout.getChildren().addAll(currScorePane, shieldInfo, hasShield, allControls);
+    controlLayout.getChildren().addAll(currScorePane, shieldInfo, hasShield, allControls, changeThemeButton);
     controlLayout.getStyleClass().add("controls-layout");
 
     layout.getChildren().addAll(board, controlLayout);
@@ -150,6 +152,32 @@ public class GameView implements FXComponent {
     layout.getStylesheets().add(getClass().getResource(css).toExternalForm());
 
     return layout;
+  }
+
+  private void fillBoardWithCells(GridPane board, HBox layout) {
+    for (int row = 0; row < model.getHeight(); row++) {
+      for (int col = 0; col < model.getWidth(); col++) {
+
+        Piece piece = model.get(new Posn(row, col));
+
+        StackPane cell = new StackPane();
+        cell.prefWidthProperty().bind(board.widthProperty().divide(model.getWidth()));
+        cell.prefHeightProperty().bind(layout.heightProperty().divide(model.getHeight()));
+
+        String cellStyle = getCellStyle();
+        cell.setStyle(cellStyle);
+
+        if (piece != null) {
+          ImageView imageView = getImageView(piece);
+          imageView.fitWidthProperty().bind(cell.prefWidthProperty().multiply(0.8));
+          imageView.fitHeightProperty().bind(cell.prefHeightProperty().multiply(0.8));
+          imageView.setPreserveRatio(true);
+          cell.getChildren().add(imageView);
+        }
+
+        board.add(cell, col, row);
+      }
+    }
   }
 
   private String getCellStyle() {
@@ -177,17 +205,27 @@ public class GameView implements FXComponent {
     if (piece instanceof Hero) {
       icon = new Image("/images/hero.png");
     } else if (piece instanceof Enemy) {
-      if (((ModelImpl) model).getDifficulty() == Difficulty.EASY) {
+      if (((ModelImpl) model).getDifficulty() == Difficulty.HARD) {
+        icon = new Image("/images/enemy_yellow.png");
+      } else if (((ModelImpl) model).getTheme() == 1) {
         icon = new Image("/images/enemy_pink.png");
       } else {
-        icon = new Image("/images/enemy_yellow.png");
-      }
+        icon = new Image("/images/rocksteady.png");
+        }
     } else if (piece instanceof Wall) {
-      icon = new Image("/images/wall.png");
+      if (((ModelImpl) model).getTheme() == 1) {
+        icon = new Image("/images/wall.png");
+      } else {
+        icon = new Image("/images/green_wall.png");
+      }
     } else if (piece instanceof Exit) {
       icon = new Image("/images/exit.png");
     } else if (piece instanceof Treasure) {
-      icon = new Image("/images/treasure.png");
+      if (((ModelImpl) model).getTheme() == 1) {
+        icon = new Image("/images/treasure.png");
+      } else {
+        icon = new Image("/images/chest.png");
+      }
     } else if (piece instanceof Shield) {
       icon = new Image("/images/shield.png");
     }
