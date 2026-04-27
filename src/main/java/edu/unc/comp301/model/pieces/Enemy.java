@@ -12,9 +12,12 @@ public class Enemy extends APiece implements MovablePiece {
 
   @Override
   public CollisionResult collide(Piece other) {
-    if (other == null || other instanceof Treasure) {
+    if (other == null || other instanceof Treasure || other instanceof Shield) {
       return new CollisionResult(0, CollisionResult.Result.CONTINUE);
     } else if (other instanceof Hero) {
+      if (((Hero) other).hasShield()) {
+        return new CollisionResult(0, CollisionResult.Result.CONTINUE);
+      }
       return new CollisionResult(0, CollisionResult.Result.GAME_OVER);
     } else {
       throw new IllegalArgumentException();

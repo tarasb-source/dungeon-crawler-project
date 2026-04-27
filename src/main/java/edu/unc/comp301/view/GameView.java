@@ -159,14 +159,14 @@ public class GameView implements FXComponent {
           "-fx-border-color: #1a1a1a;"
               + "-fx-background-color: #2b2b2b;"
               + "-fx-border-color: #141414;"
-              + "-fx-background-image: url('/stone_tile.png');"
+              + "-fx-background-image: url('/images/stone_tile.png');"
               + "-fx-background-size: cover;";
     } else {
       cellStyle =
           "-fx-border-color: #2f5d2f;"
               + "-fx-background-color: #3fa34d;"
               + "-fx-border-color: #264f12;"
-              + "-fx-background-image: url('/grass_tile2.jpg');"
+              + "-fx-background-image: url('/images/grass_tile2.png');"
               + "-fx-background-size: cover;";
     }
     return cellStyle;

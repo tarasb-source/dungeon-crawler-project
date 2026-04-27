@@ -26,7 +26,7 @@ public class Hero extends APiece implements MovablePiece {
       }
       return new CollisionResult(0, CollisionResult.Result.GAME_OVER);
     } else if (other instanceof Exit) {
-      return new CollisionResult(0, CollisionResult.Result.NEXT_LEVEL);
+      return new CollisionResult(100, CollisionResult.Result.NEXT_LEVEL);
     } else if ((other instanceof Shield)) {
       giveShield();
       return new CollisionResult(0, CollisionResult.Result.CONTINUE);
