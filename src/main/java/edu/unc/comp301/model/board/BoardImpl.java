@@ -48,7 +48,7 @@ public class BoardImpl implements Board {
     boardInit();
     numAvailableSpots = width * height;
 
-    if ((enemies + treasures + walls + 1 + 1) > numAvailableSpots) {
+    if ((enemies + treasures + walls + 1 + 1 + 1) > numAvailableSpots) {
       throw new IllegalArgumentException("Not enough space on a board");
     }
     initPieces(enemies, Enemy::new);
@@ -56,6 +56,7 @@ public class BoardImpl implements Board {
     initPieces(walls, Wall::new);
     initPieces(1, Hero::new);
     initPieces(1, Exit::new);
+    initPieces(1, Shield::new);
   }
 
   private void initPieces(int count, Supplier<Piece> supplier) {
@@ -167,6 +168,11 @@ public class BoardImpl implements Board {
           continue;
         }
         CollisionResult enemyCollision = enemy.collide(pieceAtMoveTile);
+        if (pieceAtMoveTile instanceof Hero
+            && enemyCollision.getResults() == CollisionResult.Result.CONTINUE) {
+          moved = true;
+          break;
+        }
 
         piecesPositions.remove(posn);
         board[posn.getRow()][posn.getCol()] = null;
@@ -267,5 +273,9 @@ public class BoardImpl implements Board {
 
   public void setDifficulty(Difficulty difficulty) {
     this.difficulty = difficulty;
+  }
+
+  public Hero getHero() {
+    return (Hero) piecesPositions.get(heroPosition);
   }
 }

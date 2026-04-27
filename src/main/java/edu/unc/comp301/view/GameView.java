@@ -49,6 +49,22 @@ public class GameView implements FXComponent {
     currentScoreLabel.setStyle(
         "-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffcc00;");
     currScorePane.getChildren().add(currentScoreLabel);
+    Image shieldIcon = new Image("/images/shield.png");
+    Label shieldLabel = new Label("Shield: Blocks one enemy attack");
+    shieldLabel.setStyle("-fx-font-size: 20px; -fx-text-fill: white;");
+    shieldLabel.setWrapText(true);
+    ImageView shieldView = new ImageView(shieldIcon);
+    shieldView.setFitWidth(30);
+    shieldView.setFitHeight(30);
+    shieldView.setPreserveRatio(true);
+    HBox shieldInfo = new HBox(shieldView, shieldLabel);
+    shieldInfo.setSpacing(10);
+    shieldInfo.setPadding(new Insets(5, 0, 5, 0));
+    shieldInfo.setAlignment(Pos.CENTER_LEFT);
+
+    Hero hero = ((ModelImpl) model).getHero();
+    Label hasShield = new Label(hero.hasShield() ? "Shield: ACTIVE" : "Shield: NONE");
+    hasShield.setStyle("-fx-font-size: 20px; -fx-text-fill: white; -fx-font-weight: bold;");
 
     for (int row = 0; row < model.getHeight(); row++) {
       for (int col = 0; col < model.getWidth(); col++) {
@@ -121,13 +137,13 @@ public class GameView implements FXComponent {
     controlLayout.setAlignment(Pos.CENTER);
     controlLayout.setMinWidth(300);
     controlLayout.setMaxWidth(300);
-    controlLayout.getChildren().addAll(currScorePane, allControls);
+    controlLayout.getChildren().addAll(currScorePane, shieldInfo, hasShield, allControls);
     controlLayout.getStyleClass().add("controls-layout");
 
     layout.getChildren().addAll(board, controlLayout);
 
     // Add functionality to change the view based on what theme is it
-    String css = ((ModelImpl) model).getTheme() == 1 ? "/game_view1.css" : "/game_view2.css";
+    String css = ((ModelImpl) model).getTheme() == 1 ? "/stylesheets/game_view1.css" : "/stylesheets/game_view2.css";
     layout.getStylesheets().add(getClass().getResource(css).toExternalForm());
 
     return layout;
@@ -156,19 +172,21 @@ public class GameView implements FXComponent {
   private ImageView getImageView(Piece piece) {
     Image icon = null;
     if (piece instanceof Hero) {
-      icon = new Image("/hero.png");
+      icon = new Image("/images/hero.png");
     } else if (piece instanceof Enemy) {
       if (((ModelImpl) model).getDifficulty() == Difficulty.EASY) {
-        icon = new Image("/enemy_pink.png");
+        icon = new Image("/images/enemy_pink.png");
       } else {
-        icon = new Image("/enemy_yellow.png");
+        icon = new Image("/images/enemy_yellow.png");
       }
     } else if (piece instanceof Wall) {
-      icon = new Image("/wall.png");
+      icon = new Image("/images/wall.png");
     } else if (piece instanceof Exit) {
-      icon = new Image("/exit.png");
+      icon = new Image("/images/exit.png");
     } else if (piece instanceof Treasure) {
-      icon = new Image("/treasure.png");
+      icon = new Image("/images/treasure.png");
+    } else if (piece instanceof Shield) {
+      icon = new Image("/images/shield.png");
     }
 
     ImageView imageView = new ImageView(icon);

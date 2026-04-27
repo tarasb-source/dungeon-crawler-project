@@ -90,30 +90,25 @@ public class TitleScreenView implements FXComponent {
     rootLayout.setLeft(spacer);
 
     rootLayout.getStyleClass().add("menu-root");
-    rootLayout.getStylesheets().add(getClass().getResource("/title_view1.css").toExternalForm());
+    rootLayout.getStylesheets().add(getClass().getResource("/stylesheets/title_view1.css").toExternalForm());
 
     // Change the theme when the button is pressed
     btn1.setOnAction(
         e -> {
-          if (((ModelImpl) model).getTheme() == 1) {
-            ((ModelImpl) model).setTheme(2);
-          } else {
-            ((ModelImpl) model).setTheme(1);
-          }
+          ModelImpl m = (ModelImpl) model;
 
-          String currentSheet =
-              rootLayout.getStylesheets().isEmpty() ? "" : rootLayout.getStylesheets().getFirst();
-
-          rootLayout.getStylesheets().clear();
-
-          if (currentSheet.contains("title_view1.css")) {
+          if (m.getTheme() == 1) {
+            m.setTheme(2);
+            rootLayout.getStylesheets().clear();
             rootLayout
                 .getStylesheets()
-                .add(getClass().getResource("/title_view2.css").toExternalForm());
+                .add(getClass().getResource("/stylesheets/title_view2.css").toExternalForm());
           } else {
+            m.setTheme(1);
+            rootLayout.getStylesheets().clear();
             rootLayout
                 .getStylesheets()
-                .add(getClass().getResource("/title_view1.css").toExternalForm());
+                .add(getClass().getResource("/stylesheets/title_view1.css").toExternalForm());
           }
         });
 

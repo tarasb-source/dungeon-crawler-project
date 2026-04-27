@@ -4,6 +4,7 @@ import edu.unc.comp301.model.board.Board;
 import edu.unc.comp301.model.board.BoardImpl;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.pieces.CollisionResult;
+import edu.unc.comp301.model.pieces.Hero;
 import edu.unc.comp301.model.pieces.Piece;
 import java.util.ArrayList;
 import java.util.List;
@@ -162,5 +163,9 @@ public class ModelImpl implements Model {
 
   public void setTheme(int theme) {
     this.theme = theme;
+  }
+
+  public Hero getHero() {
+    return (Hero) ((BoardImpl) board).getHero();
   }
 }
