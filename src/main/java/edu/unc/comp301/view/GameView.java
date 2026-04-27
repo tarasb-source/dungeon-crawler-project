@@ -139,7 +139,9 @@ public class GameView implements FXComponent {
     controlLayout.setAlignment(Pos.CENTER);
     controlLayout.setMinWidth(300);
     controlLayout.setMaxWidth(300);
-    controlLayout.getChildren().addAll(currScorePane, shieldInfo, hasShield, allControls, changeThemeButton);
+    controlLayout
+        .getChildren()
+        .addAll(currScorePane, shieldInfo, hasShield, allControls, changeThemeButton);
     controlLayout.getStyleClass().add("controls-layout");
 
     layout.getChildren().addAll(board, controlLayout);
@@ -211,7 +213,7 @@ public class GameView implements FXComponent {
         icon = new Image("/images/enemy_pink.png");
       } else {
         icon = new Image("/images/rocksteady.png");
-        }
+      }
     } else if (piece instanceof Wall) {
       if (((ModelImpl) model).getTheme() == 1) {
         icon = new Image("/images/wall.png");
