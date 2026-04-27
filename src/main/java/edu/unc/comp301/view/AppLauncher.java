@@ -22,7 +22,7 @@ public class AppLauncher extends Application {
     model.addObserver(view);
 
     Scene scene = new Scene(view.render(), width, height);
-    scene.getStylesheets().add("stylesheets/dungeon.css");
+    scene.getStylesheets().add("dungeon.css");
     scene.addEventFilter(
         KeyEvent.KEY_PRESSED,
         event -> {

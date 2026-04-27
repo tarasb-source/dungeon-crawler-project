@@ -143,7 +143,10 @@ public class GameView implements FXComponent {
     layout.getChildren().addAll(board, controlLayout);
 
     // Add functionality to change the view based on what theme is it
-    String css = ((ModelImpl) model).getTheme() == 1 ? "/stylesheets/game_view1.css" : "/stylesheets/game_view2.css";
+    String css =
+        ((ModelImpl) model).getTheme() == 1
+            ? "/stylesheets/game_view1.css"
+            : "/stylesheets/game_view2.css";
     layout.getStylesheets().add(getClass().getResource(css).toExternalForm());
 
     return layout;

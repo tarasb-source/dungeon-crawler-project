@@ -90,7 +90,9 @@ public class TitleScreenView implements FXComponent {
     rootLayout.setLeft(spacer);
 
     rootLayout.getStyleClass().add("menu-root");
-    rootLayout.getStylesheets().add(getClass().getResource("/stylesheets/title_view1.css").toExternalForm());
+    rootLayout
+        .getStylesheets()
+        .add(getClass().getResource("/stylesheets/title_view1.css").toExternalForm());
 
     // Change the theme when the button is pressed
     btn1.setOnAction(
