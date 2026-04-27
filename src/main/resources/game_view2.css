@@ -1,0 +1,12 @@
+.controls-layout {
+    -fx-background-image: url("/background_2.png");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+}
+
+.button {
+    -fx-font-size: 38px;
+    -fx-background-color: #ffcc00;
+    -fx-text-fill: #4e2f00;
+}

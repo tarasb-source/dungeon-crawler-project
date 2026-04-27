@@ -1,5 +1,6 @@
 package edu.unc.comp301.model.board;
 
+import edu.unc.comp301.model.Difficulty;
 import edu.unc.comp301.model.pieces.*;
 import java.util.*;
 import java.util.function.Supplier;
@@ -10,6 +11,7 @@ public class BoardImpl implements Board {
   private Map<Posn, Piece> piecesPositions;
   private int width, height, numAvailableSpots;
   private Posn heroPosition;
+  private Difficulty difficulty;
 
   public BoardImpl(int width, int height) {
     this.board = new Piece[height][width];
@@ -18,6 +20,7 @@ public class BoardImpl implements Board {
     this.width = width;
     this.height = height;
     this.numAvailableSpots = width * height;
+    this.difficulty = Difficulty.EASY;
     boardInit();
   }
 
@@ -139,12 +142,16 @@ public class BoardImpl implements Board {
       }
 
       Enemy enemy = (Enemy) p;
-      Directions[] dirs = Directions.values();
-      int start = random.nextInt(dirs.length);
+      Directions[] dirs;
+
+      if (difficulty == Difficulty.HARD) {
+        dirs = getDirectionsTowardHero(posn);
+      } else {
+        dirs = randomDirections();
+      }
       boolean moved = false;
 
-      for (int i = 0; i < dirs.length; i++) {
-        Directions dir = dirs[(start + i) % dirs.length];
+      for (Directions dir : dirs) {
         int newEnemyRow = posn.getRow() + dir.getDRow();
         int newEnemyCol = posn.getCol() + dir.getDCol();
 
@@ -179,6 +186,28 @@ public class BoardImpl implements Board {
       }
     }
     return new CollisionResult(heroCollision.getPoints(), CollisionResult.Result.CONTINUE);
+  }
+
+  private Directions[] randomDirections() {
+    List<Directions> dirs = new ArrayList<>(List.of(Directions.values()));
+    Collections.shuffle(dirs);
+    return dirs.toArray(new Directions[0]);
+  }
+
+  private Directions[] getDirectionsTowardHero(Posn enemyPos) {
+    List<Directions> dirs = new ArrayList<>(List.of(Directions.values()));
+
+    dirs.sort(
+        Comparator.comparingInt(
+            dir -> {
+              int newRow = enemyPos.getRow() + dir.getDRow();
+              int newCol = enemyPos.getCol() + dir.getDCol();
+
+              return Math.abs(heroPosition.getRow() - newRow)
+                  + Math.abs(heroPosition.getCol() - newCol);
+            }));
+
+    return dirs.toArray(new Directions[0]);
   }
 
   private enum Directions {
@@ -234,5 +263,9 @@ public class BoardImpl implements Board {
         }
       }
     }
+  }
+
+  public void setDifficulty(Difficulty difficulty) {
+    this.difficulty = difficulty;
   }
 }

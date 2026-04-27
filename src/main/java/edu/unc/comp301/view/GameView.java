@@ -1,7 +1,9 @@
 package edu.unc.comp301.view;
 
 import edu.unc.comp301.controller.Controller;
+import edu.unc.comp301.model.Difficulty;
 import edu.unc.comp301.model.Model;
+import edu.unc.comp301.model.ModelImpl;
 import edu.unc.comp301.model.board.Posn;
 import edu.unc.comp301.model.pieces.*;
 import javafx.geometry.Insets;
@@ -44,7 +46,8 @@ public class GameView implements FXComponent {
 
     StackPane currScorePane = new StackPane();
     Label currentScoreLabel = new Label("Current score: " + model.getCurScore());
-    currentScoreLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #333;");
+    currentScoreLabel.setStyle(
+        "-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffcc00;");
     currScorePane.getChildren().add(currentScoreLabel);
 
     for (int row = 0; row < model.getHeight(); row++) {
@@ -55,7 +58,9 @@ public class GameView implements FXComponent {
         StackPane cell = new StackPane();
         cell.prefWidthProperty().bind(board.widthProperty().divide(model.getWidth()));
         cell.prefHeightProperty().bind(layout.heightProperty().divide(model.getHeight()));
-        cell.setStyle("-fx-border-color: #444; -fx-background-color: #2c2c2c;");
+
+        String cellStyle = getCellStyle();
+        cell.setStyle(cellStyle);
 
         if (piece != null) {
           ImageView imageView = getImageView(piece);
@@ -70,6 +75,7 @@ public class GameView implements FXComponent {
     }
 
     VBox allControls = new VBox();
+
     allControls.setSpacing(5);
 
     Button upButton = new Button("↑");
@@ -92,6 +98,16 @@ public class GameView implements FXComponent {
     leftButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
     rightButton.setStyle("-fx-font-size: 20px; -fx-font-weight: bold;");
 
+    layout.setOnKeyPressed(
+        e -> {
+          switch (e.getCode()) {
+            case W, UP -> controller.moveUp();
+            case A, LEFT -> controller.moveLeft();
+            case S, DOWN -> controller.moveDown();
+            case D, RIGHT -> controller.moveRight();
+          }
+        });
+
     HBox otherControls = new HBox(leftButton, downButton, rightButton);
     otherControls.setSpacing(5);
     otherControls.setAlignment(Pos.CENTER);
@@ -106,18 +122,47 @@ public class GameView implements FXComponent {
     controlLayout.setMinWidth(300);
     controlLayout.setMaxWidth(300);
     controlLayout.getChildren().addAll(currScorePane, allControls);
+    controlLayout.getStyleClass().add("controls-layout");
 
     layout.getChildren().addAll(board, controlLayout);
+
+    // Add functionality to change the view based on what theme is it
+    String css = ((ModelImpl) model).getTheme() == 1 ? "/game_view1.css" : "/game_view2.css";
+    layout.getStylesheets().add(getClass().getResource(css).toExternalForm());
 
     return layout;
   }
 
-  private static ImageView getImageView(Piece piece) {
+  private String getCellStyle() {
+    String cellStyle;
+    if (((ModelImpl)model).getTheme() == 1) {
+      cellStyle =
+          "-fx-border-color: #1a1a1a;"
+              + "-fx-background-color: #2b2b2b;"
+              + "-fx-border-color: #141414;"
+              + "-fx-background-image: url('/stone_tile.png');"
+              + "-fx-background-size: cover;";
+    } else {
+      cellStyle =
+          "-fx-border-color: #2f5d2f;"
+              + "-fx-background-color: #3fa34d;"
+              + "-fx-border-color: #264f12;"
+              + "-fx-background-image: url('/grass_tile2.jpg');"
+              + "-fx-background-size: cover;";
+    }
+    return cellStyle;
+  }
+
+  private ImageView getImageView(Piece piece) {
     Image icon = null;
     if (piece instanceof Hero) {
       icon = new Image("/hero.png");
     } else if (piece instanceof Enemy) {
-      icon = new Image("/enemy_pink.png");
+      if (((ModelImpl) model).getDifficulty() == Difficulty.EASY) {
+        icon = new Image("/enemy_pink.png");
+      } else {
+        icon = new Image("/enemy_yellow.png");
+      }
     } else if (piece instanceof Wall) {
       icon = new Image("/wall.png");
     } else if (piece instanceof Exit) {

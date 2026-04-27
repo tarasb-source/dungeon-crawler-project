@@ -15,6 +15,8 @@ public class ModelImpl implements Model {
   private STATUS status;
   private int level;
   private final List<Observer> observers;
+  private Difficulty difficulty;
+  private int theme;
 
   public ModelImpl(int width, int height) {
     this.board = new BoardImpl(width, height);
@@ -23,6 +25,8 @@ public class ModelImpl implements Model {
     this.status = STATUS.END_GAME;
     this.level = 0;
     this.observers = new ArrayList<>();
+    this.difficulty = Difficulty.EASY;
+    this.theme = 1;
   }
 
   public ModelImpl(Board board) {
@@ -76,6 +80,7 @@ public class ModelImpl implements Model {
     level = 1;
     try {
       board.init(level + 1, 2, 2);
+      ((BoardImpl) board).setDifficulty(difficulty);
     } catch (IllegalArgumentException e) {
       endGame();
       return;
@@ -141,5 +146,21 @@ public class ModelImpl implements Model {
     for (Observer o : observers) {
       o.update();
     }
+  }
+
+  public void setDifficulty(Difficulty difficulty) {
+    this.difficulty = difficulty;
+  }
+
+  public Difficulty getDifficulty() {
+    return difficulty;
+  }
+
+  public int getTheme() {
+    return theme;
+  }
+
+  public void setTheme(int theme) {
+    this.theme = theme;
   }
 }

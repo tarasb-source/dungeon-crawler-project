@@ -1,0 +1,94 @@
+.menu-root {
+    -fx-background-image: url("/title_background.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center center;
+    -fx-background-size: cover;
+    -fx-background-color: black;
+    -fx-font-family: "Garamond";
+}
+
+.label {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    //-fx-text-fill: #ffcc00;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.85), 4, 1, 0, 2);
+}
+
+.title {
+    -fx-font-size: 68px;
+    -fx-text-fill: #ffcc00;
+}
+
+.score {
+    -fx-font-size: 40px;
+    -fx-text-fill: #ffcc00;
+}
+
+.score-small {
+    -fx-font-size: 38px;
+    -fx-font-weight: normal;
+    -fx-text-fill: #ffcc00;
+}
+
+.score, .score-small {
+    -fx-background-color: rgba(0, 0, 0, 0.4);
+    -fx-text-fill: #ffcc00;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 5;
+}
+
+.credit {
+    -fx-font-size: 30px;
+    -fx-text-fill: #ffcc00;
+}
+
+.toggle-view-button,
+.game-mode-button {
+    -fx-pref-width: 220px;
+    -fx-min-width: 220px;
+    -fx-max-width: 220px;
+    -fx-alignment: center;
+}
+
+.button {
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-background-insets: 0;
+    -fx-border-insets: 0;
+    -fx-padding: 10 20 10 20;
+}
+
+.button:hover {
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.start-button {
+    -fx-font-size: 38px;
+    -fx-background-color: #ffcc00;
+    -fx-text-fill: #4e2f00;
+}
+
+.start-button:hover {
+    -fx-background-color: #a58206;
+}
+
+.toggle-view-button {
+    -fx-font-size: 24px;
+    -fx-background-color: #9619df;
+    -fx-text-fill: #ffffff;
+}
+
+.game-mode-button {
+    -fx-font-size: 24px;
+    -fx-background-color: #5bcdaa;
+    -fx-text-fill: #ffffff;
+}
+
+.toggle-view-button,
+.game-mode-button {
+    -fx-pref-width: 220px;
+    -fx-min-width: 220px;
+    -fx-max-width: 220px;
+    -fx-alignment: center;
+}

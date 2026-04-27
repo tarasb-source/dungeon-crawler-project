@@ -5,10 +5,9 @@ import edu.unc.comp301.model.Model;
 import edu.unc.comp301.model.Observer;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+
 
 public class View implements FXComponent, Observer {
   private final Controller controller;
