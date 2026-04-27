@@ -37,5 +37,4 @@ public class ControllerImpl implements Controller {
   public void endGame() {
     model.endGame();
   }
-
 }

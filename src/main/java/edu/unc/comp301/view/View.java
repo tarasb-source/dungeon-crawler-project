@@ -7,8 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
-
 public class View implements FXComponent, Observer {
   private final Controller controller;
   private final Model model;

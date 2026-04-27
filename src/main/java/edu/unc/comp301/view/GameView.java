@@ -135,7 +135,7 @@ public class GameView implements FXComponent {
 
   private String getCellStyle() {
     String cellStyle;
-    if (((ModelImpl)model).getTheme() == 1) {
+    if (((ModelImpl) model).getTheme() == 1) {
       cellStyle =
           "-fx-border-color: #1a1a1a;"
               + "-fx-background-color: #2b2b2b;"

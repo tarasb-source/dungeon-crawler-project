@@ -10,7 +10,7 @@
 .label {
     -fx-font-size: 36px;
     -fx-font-weight: bold;
-    //-fx-text-fill: #ffcc00;
+/ / -fx-text-fill: #ffcc00;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.85), 4, 1, 0, 2);
 }
 
